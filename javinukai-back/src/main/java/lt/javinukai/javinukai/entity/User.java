@@ -68,7 +68,8 @@ public class User implements UserDetails {
     private List<Photo> images;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER,
-            cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
+//            cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
+            cascade = CascadeType.ALL)
     @JsonIgnore
     private List<CompetitionRecord> competitionRecords;
 

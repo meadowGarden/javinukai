@@ -39,7 +39,7 @@ public class Category {
     private long totalSubmissions;
 
     @Setter
-    @ManyToMany(fetch = FetchType.LAZY,
+    @ManyToMany(fetch = FetchType.EAGER,
             cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
             name = "contest_category",
@@ -61,7 +61,7 @@ public class Category {
     @Column(name = "modified_at")
     private ZonedDateTime modifiedAt;
 
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY,
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER,
             cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
     @JsonIgnore
     private List<CompetitionRecord> competitionRecords = new ArrayList<>();

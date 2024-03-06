@@ -15,8 +15,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,6 +38,7 @@ public class ContestController {
     @PostMapping(path = "/contests")
 //    public ResponseEntity<Contest> createContest(@RequestBody @Valid ContestDTO contestDTO,
 //                                                 @AuthenticationPrincipal UserDetails userDetails) {
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Contest> createContest(@RequestBody @Valid ContestDTO contestDTO) {
         final Contest createdContest = contestService.createContest(contestDTO);
         log.info("Request for contest creation completed, given ID: {}", createdContest.getId());
@@ -43,6 +46,7 @@ public class ContestController {
     }
 
     @GetMapping(path = "/contests")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MODERATOR', 'ROLE_USER', 'ROLE_JURY')")
     public ResponseEntity<Page<Contest>> retrieveAllContests(@AuthenticationPrincipal User participant,
                                                              @RequestParam(defaultValue = "1") int pageNumber,
                                                              @RequestParam(defaultValue = "25") int pageSize,
@@ -61,6 +65,7 @@ public class ContestController {
     }
 
     @GetMapping(path = "/contests/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MODERATOR', 'ROLE_USER', 'ROLE_JURY')")
     public ResponseEntity<Contest> retrieveContest(@PathVariable @NotNull UUID id) {
         log.info("Request for retrieving contest with ID: {}", id);
         final Contest foundContest = contestService.retrieveContest(id);
@@ -68,6 +73,7 @@ public class ContestController {
     }
 
     @PutMapping(path = "/contests/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Contest> updateContest(@PathVariable @NotNull UUID id,
                                                  @RequestBody @Valid ContestDTO contestDTO) {
         log.info("Request for updating contest with ID: {}", id);
@@ -76,6 +82,7 @@ public class ContestController {
     }
 
     @PatchMapping(path = "/contests/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Contest> patchCategories(@PathVariable @NotNull UUID id,
                                                   @RequestBody @Valid List<Category> categories) {
         log.info("Request for patching contest with ID: {}", id);
@@ -84,6 +91,8 @@ public class ContestController {
     }
 
     @DeleteMapping(path = "/contests/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @Transactional
     public ResponseEntity<?> deleteContest(@PathVariable @NotNull UUID id) {
         log.info("Request for deleting contest with ID: {}", id);
         contestService.deleteContest(id);

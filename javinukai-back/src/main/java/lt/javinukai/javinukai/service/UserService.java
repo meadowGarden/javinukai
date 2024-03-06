@@ -10,6 +10,7 @@ import lt.javinukai.javinukai.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -75,7 +76,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-
+    @Transactional
     public List<User> deleteUser(UUID userId) {
         if (userRepository.existsById(userId)) {
             userRepository.deleteById(userId);

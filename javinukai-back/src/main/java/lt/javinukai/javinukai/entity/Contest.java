@@ -33,7 +33,7 @@ public class Contest {
     private String description;
 
     @Setter
-    @ManyToMany(fetch = FetchType.LAZY,
+    @ManyToMany(fetch = FetchType.EAGER,
             cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
     @JsonIgnore
     @JoinTable(
@@ -43,7 +43,7 @@ public class Contest {
     )
     private List<Category> categories;
 
-    @OneToMany(mappedBy = "contest", fetch = FetchType.LAZY,
+    @OneToMany(mappedBy = "contest", fetch = FetchType.EAGER,
             cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
     @JsonIgnore
     private List<CompetitionRecord> competitionRecords = new ArrayList<>();
