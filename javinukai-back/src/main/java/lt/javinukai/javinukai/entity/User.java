@@ -64,19 +64,22 @@ public class User implements UserDetails {
     private Set<UserToken> tokens;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "author", cascade = CascadeType.MERGE)
+//    @OneToMany(fetch = FetchType.EAGER, mappedBy = "author", cascade = CascadeType.MERGE)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "author", cascade = CascadeType.ALL)
     private List<Photo> images;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER,
 //            cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
             cascade = CascadeType.ALL)
     @JsonIgnore
+    @Setter
     private List<CompetitionRecord> competitionRecords;
 
     @Setter
     @JsonIgnore
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER,
-            cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
+//            cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
+            cascade = CascadeType.ALL)
     private List<ParticipationRequest> participationRequests;
 
     @CreatedDate

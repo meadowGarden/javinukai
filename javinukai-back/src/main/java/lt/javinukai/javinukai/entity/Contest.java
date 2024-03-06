@@ -34,7 +34,8 @@ public class Contest {
 
     @Setter
     @ManyToMany(fetch = FetchType.EAGER,
-            cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
+//            cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
+            cascade = CascadeType.ALL)
     @JsonIgnore
     @JoinTable(
             name = "contest_category",
@@ -44,14 +45,15 @@ public class Contest {
     private List<Category> categories;
 
     @OneToMany(mappedBy = "contest", fetch = FetchType.EAGER,
-            cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
+//            cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
+            cascade = CascadeType.ALL)
     @JsonIgnore
     private List<CompetitionRecord> competitionRecords = new ArrayList<>();
 
-    @Setter
     @JsonIgnore
     @OneToMany(mappedBy = "contest",
-            cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
+//            cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
+            cascade = CascadeType.ALL)
     private List<ParticipationRequest> participationRequests;
 
     @Setter

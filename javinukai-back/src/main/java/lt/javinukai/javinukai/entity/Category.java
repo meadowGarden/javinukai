@@ -40,7 +40,8 @@ public class Category {
 
     @Setter
     @ManyToMany(fetch = FetchType.EAGER,
-            cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
+//            cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
+            cascade = CascadeType.ALL)
     @JoinTable(
             name = "contest_category",
             joinColumns = @JoinColumn(name = "category_id"),
@@ -62,8 +63,10 @@ public class Category {
     private ZonedDateTime modifiedAt;
 
     @OneToMany(mappedBy = "category", fetch = FetchType.EAGER,
-            cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
+    //            cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
+                cascade = CascadeType.ALL)
     @JsonIgnore
+    @Setter
     private List<CompetitionRecord> competitionRecords = new ArrayList<>();
 
     @Setter

@@ -35,7 +35,8 @@ public class CompetitionRecord {
 //    @JsonIgnore
     private User user;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "competitionRecord", cascade = CascadeType.MERGE)
+//    @OneToMany(fetch = FetchType.EAGER, mappedBy = "competitionRecord", cascade = CascadeType.MERGE)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "competitionRecord", cascade = CascadeType.ALL)
     private List<PhotoCollection> entries;
 
     @Setter

@@ -35,7 +35,8 @@ public class PhotoCollection {
     private User author;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "collection",
-            cascade = {CascadeType.REMOVE, CascadeType.MERGE})
+//            cascade = {CascadeType.REMOVE, CascadeType.MERGE})
+            cascade = CascadeType.ALL)
     private List<Photo> images;
 
     @ManyToOne(fetch = FetchType.EAGER)
