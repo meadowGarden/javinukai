@@ -36,12 +36,13 @@ function ArchivePage() {
         paginationSettings.searchedField
       ),
   });
-
   const { t } = useTranslation();
+
+  console.log("data in archive" + data?.content.contestID);
 
   return (
     <div className="w-full min-h-[82vh] xl:flex xl:flex-col xl:items-center bg-slate-50">
-      <div className="xl:w-3/4 w-full px-2">
+      <div className="xl:w-4/4 w-full px-2">
         <PaginationSettings
           pagination={paginationSettings}
           setPagination={setPaginationSettings}
@@ -55,7 +56,7 @@ function ArchivePage() {
             </>
           }
           searchByFieldName={t("ArchivePage.contestName")}
-          firstPage={data?.firs}
+          firstPage={data?.first}
           lastPage={data?.last}
         />
         <div className=" xl:grid xl:grid-cols-10 px-3 py-5 font-bold text-lg text-slate-700 bg-white mt-2 rounded-md shadow">
@@ -69,14 +70,16 @@ function ArchivePage() {
             <BarLoader />
           </div>
         ) : (
-          <>
-            {data?.content.map((contestRecord) => (
-              <PastCompetitionListItem
-                key={contestRecord.id}
-                contestRecord={contestRecord}
-              />
-            ))}
-          </>
+          <div>
+            {data &&
+              data?.content &&
+              data?.content.map((contestRecord) => (
+                <PastCompetitionListItem
+                  key={contestRecord.id}
+                  contestRecord={contestRecord}
+                />
+              ))}
+          </div>
         )}
       </div>
       <div>

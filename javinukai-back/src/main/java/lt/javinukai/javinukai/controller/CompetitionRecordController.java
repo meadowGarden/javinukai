@@ -100,6 +100,23 @@ public class CompetitionRecordController {
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/records/competing/{contestID}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Page<User>> retrieveStillCompetingUsers(@PathVariable @NotNull UUID contestID,
+                                                                  @RequestParam(defaultValue = "0") int pageNumber,
+                                                                  @RequestParam(defaultValue = "25") int pageSize,
+                                                                  @RequestParam(required = false) String keyword,
+                                                                  @RequestParam(defaultValue = "surname") String sortBy,
+                                                                  @RequestParam(defaultValue = "false") boolean sortDesc) {
+        Sort.Direction direction = sortDesc ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, sortBy);
+        final Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+        final Page<User> participatingUsers = competitionRecordService
+                .retrieveCompetingParticipants(pageable, contestID, keyword);
+
+        return new ResponseEntity<>(participatingUsers, HttpStatus.OK);
+    }
+
     @PatchMapping(path = "/records/{recordID}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MODERATOR')")
     public ResponseEntity<CompetitionRecord> updateRecord(@PathVariable @NotNull UUID recordID,

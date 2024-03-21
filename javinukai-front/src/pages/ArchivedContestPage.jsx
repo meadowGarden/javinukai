@@ -1,157 +1,94 @@
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router-dom";
-import getUser from "../services/users/getUser";
-import SpinnerPage from "./SpinnerPage";
-import { DangerZone } from "../Components/user-management/DangerZone";
-import formatTimestap from "../utils/formatTimestap";
-import Button from "../Components/Button";
+import { useState } from "react";
+import PaginationSettings from "../Components/PaginationSettings";
+import { BarLoader } from "react-spinners";
 import { useTranslation } from "react-i18next";
-import getPastCompetitionRecord from "../services/archive/getPastCompetitionRecord";
+import ChangePage from "../Components/user-management/ChangePage";
+import getPastContest from "../services/archive/getPastContest";
+import { PastCompetitionListItem } from "../Components/archive/PastCompetitionListItem";
+import { ContestRecordListItem } from "../Components/archive/ContestRecordListItem";
 
-function UserDetailsField({ fieldName, fieldValue, valueIsRed }) {
-  return (
-    <section className="text py-3">
-      <label className={`text-lg text-slate-900`}>{fieldName}</label>
-      <span>: </span>
-      <span
-        className={`text-lg text-wrap ${
-          valueIsRed ? "text-red-500 font-bold" : "text-teal-600"
-        }`}
-      >
-        {fieldValue}
-      </span>
-    </section>
-  );
-}
+const defaultPagination = {
+  page: 0,
+  limit: 25,
+  sortBy: "contestName",
+  sortDesc: "false",
+  searchedField: null,
+};
 
-function ArchivedContestPage() {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-
-  const { contestID } = useParams();
+function ArchivePage() {
+  const [paginationSettings, setPaginationSettings] =
+    useState(defaultPagination);
   const { data, isFetching } = useQuery({
-    queryKey: ["user", userId],
-    queryFn: () => getPastCompetitionRecord(userId),
+    queryKey: [
+      "archiveRecords",
+      paginationSettings.page,
+      paginationSettings.limit,
+      paginationSettings.sortBy,
+      paginationSettings.sortDesc,
+      paginationSettings.searchedField,
+    ],
+    queryFn: () =>
+      getPastContest(
+        paginationSettings.page,
+        paginationSettings.limit,
+        paginationSettings.sortBy,
+        paginationSettings.sortDesc,
+        paginationSettings.searchedField
+      ),
   });
 
+  const { t } = useTranslation();
+
   return (
-    <>
-      {isFetching ? (
-        <SpinnerPage />
-      ) : (
-        <div className="w-full min-h-[82vh] flex flex-col items-center bg-slate-100">
-          <div className="lg:w-3/4 w-full h-fit bg-white shadow-md lg:my-4 p-8 rounded-md">
-            <article className="lg:grid lg:grid-cols-2 flex flex-col space-y-4 lg:space-y-0 pb-4">
-              <section>
-                <h1 className="text-2xl">
-                  {t("UserDetailsPage.personalTitle")}
-                </h1>
-                <UserDetailsField
-                  fieldName={t("UserDetailsPage.personalName")}
-                  fieldValue={data?.name}
-                />
-                <UserDetailsField
-                  fieldName={t("UserDetailsPage.personalSurname")}
-                  fieldValue={data?.surname}
-                />
-                <UserDetailsField
-                  fieldName={t("UserDetailsPage.personalEmail")}
-                  fieldValue={data?.email}
-                />
-                <UserDetailsField
-                  fieldName={t("UserDetailsPage.personalEmail")}
-                  fieldValue={data?.email}
-                />
-                <UserDetailsField
-                  fieldName={t("UserDetailsPage.personalBirthYear")}
-                  fieldValue={data?.birthYear}
-                />
-                <UserDetailsField
-                  fieldName={t("UserDetailsPage.personalPhoneNumber")}
-                  fieldValue={data?.phoneNumber}
-                />
-                <UserDetailsField
-                  fieldName={t("UserDetailsPage.personalFreelance")}
-                  fieldValue={
-                    data?.isFreelance
-                      ? t("UserDetailsPage.isTrue")
-                      : t("UserDetailsPage.isFalse")
-                  }
-                />
-                {!data?.isFreelance && (
-                  <UserDetailsField
-                    fieldName={t("UserDetailsPage.personalInstitution")}
-                    fieldValue={data?.institution}
-                  />
-                )}
-              </section>
-              <section className="">
-                <h1 className="text-2xl">
-                  {t("UserDetailsPage.accountTitle")}
-                </h1>
-                <UserDetailsField
-                  fieldName={t("UserDetailsPage.accountID")}
-                  fieldValue={data?.id}
-                />
-                <UserDetailsField
-                  fieldName={t("UserDetailsPage.accountCreationDate")}
-                  fieldValue={formatTimestap(data?.createdAt)}
-                />
-                {data?.modifiedAt && (
-                  <UserDetailsField
-                    fieldName={t("UserDetailsPage.accountLastModifiedDate")}
-                    fieldValue={formatTimestap(data?.modifiedAt)}
-                  />
-                )}
-                <UserDetailsField
-                  fieldName={t("UserDetailsPage.accountEmailConfirmed")}
-                  fieldValue={
-                    data?.isEnabled
-                      ? t("UserDetailsPage.isTrue")
-                      : t("UserDetailsPage.isFalse")
-                  }
-                  valueIsRed={!data?.isEnabled}
-                />
-                <UserDetailsField
-                  fieldName={t("UserDetailsPage.accountIsLocked")}
-                  fieldValue={
-                    data?.isNonLocked
-                      ? t("UserDetailsPage.isFalse")
-                      : t("UserDetailsPage.isTrue")
-                  }
-                  valueIsRed={!data?.isNonLocked}
-                />
-                <UserDetailsField
-                  fieldName={t("UserDetailsPage.accountRole")}
-                  fieldValue={t(`roles.${data?.role}`) || data?.role}
-                />
-                <UserDetailsField
-                  fieldName={t("UserDetailsPage.accountMaxPhotosContest")}
-                  fieldValue={data?.maxTotal}
-                />
-                <UserDetailsField
-                  fieldName={t("UserDetailsPage.accountMaxSinglesCategories")}
-                  fieldValue={data?.maxSinglePhotos}
-                />
-                <UserDetailsField
-                  fieldName={t(
-                    "UserDetailsPage.accountMaxCollectionCategories"
-                  )}
-                  fieldValue={data?.maxCollections}
-                />
-              </section>
-            </article>
-            <Button
-              onClick={() => navigate("/manage-users")}
-              extraStyle="text-lg mt-2 w-full lg:w-fit"
-            >
-              {t("UserDetailsPage.backButton")}
-            </Button>
-          </div>
+    <div className="w-full min-h-[82vh] xl:flex xl:flex-col xl:items-center bg-slate-50">
+      <div className="xl:w-4/5 w-full px-2">
+        <PaginationSettings
+          pagination={paginationSettings}
+          setPagination={setPaginationSettings}
+          availablePageNumber={data?.totalPages}
+          limitObjectName={t("UserManagementPage.userLimitObject")}
+          sortFieldOptions={
+            <>
+              <option value="contestName">
+                {t("ArchivePage.contestName")}
+              </option>
+            </>
+          }
+          searchByFieldName={t("ArchivePage.contestName")}
+          firstPage={data?.firs}
+          lastPage={data?.last}
+        />
+        <div className=" xl:grid xl:grid-cols-10 px-3 py-5 font-bold text-lg text-slate-700 bg-white mt-2 rounded-md shadow">
+          <p className="col-span-3">{t("ArchivePage.contestName")}</p>
+          <p className="col-span-5">{t("ArchivePage.contestDescription")}</p>
+          <p className="col-span-1">{t("ArchivePage.startDate")}</p>
+          <p className="col-span-1">{t("ArchivePage.endDate")}</p>
         </div>
-      )}
-    </>
+        {isFetching ? (
+          <div className="h-[50vh] flex flex-col justify-center items-center">
+            <BarLoader />
+          </div>
+        ) : (
+          <div>
+            {data?.content.map((contestRecord) => (
+              <PastCompetitionListItem
+                key={contestRecord.id}
+                contestRecord={contestRecord}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+      <div>
+        <ChangePage
+          pagination={paginationSettings}
+          setPagination={setPaginationSettings}
+          availablePageNumber={data?.totalPages}
+        />
+      </div>
+    </div>
   );
 }
 
-export default ArchivedContestPage;
+export default ArchivePage;

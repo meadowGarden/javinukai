@@ -1,9 +1,14 @@
 export default async function (page, limit, sortBy, sortDesc, name) {
+  console.log("page -> " + page);
+  console.log("limit -> " + limit);
+  console.log("sortBy -> " + sortBy);
+  console.log("sortDesc -> " + sortDesc);
+  console.log("name -> " + name);
 
   const res = await fetch(
     `${
       import.meta.env.VITE_BACKEND
-    }/api/v1/archive?page=${page}&limit=${limit}&sortBy=${sortBy}&sortDesc=${sortDesc}${
+    }/api/v1/archivedContests?page=${page}&limit=${limit}&sortBy=${sortBy}&sortDesc=${sortDesc}${
       name ? "&name=" + name : ""
     }`,
     {
@@ -20,5 +25,6 @@ export default async function (page, limit, sortBy, sortDesc, name) {
     const err = await res.json();
     throw new Error(err.title);
   }
+
   return await res.json();
 }

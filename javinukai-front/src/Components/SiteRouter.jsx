@@ -20,6 +20,7 @@ import NotFoundPage from "../pages/NotFoundPage";
 import LandingPage from "../pages/LandingPage";
 import CreateContest from "./Contest-Components/CreateContest";
 import ArchivePage from "../pages/ArchivePage";
+// import ArchivedContestPage from "../pages/ArchivedContestPage";
 
 function SiteRouter({ user }) {
   const userRole = user?.role;
@@ -121,6 +122,15 @@ function SiteRouter({ user }) {
               path={getRoute(userRole, ["ADMIN", "MODERATOR"], "/archive")}
               element={<ArchivePage />}
             />
+
+            {/* <Route
+              path={getRoute(
+                userRole,
+                ["ADMIN", "MODERATOR"],
+                "/archive/:contestID"
+              )}
+              element={<ArchivedContestPage />}
+            /> */}
 
             <Route path="/*" element={<NotFoundPage />} />
           </Route>

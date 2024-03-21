@@ -2,9 +2,11 @@ package lt.javinukai.javinukai.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import lt.javinukai.javinukai.dto.request.contest.ArchivedContestDTO;
 import lt.javinukai.javinukai.dto.response.ArchivingResponse;
 import lt.javinukai.javinukai.entity.CompetitionRecord;
 import lt.javinukai.javinukai.entity.PastCompetitionRecord;
+import lt.javinukai.javinukai.mapper.ArchiveMapper;
 import lt.javinukai.javinukai.repository.ArchiveRepository;
 import lt.javinukai.javinukai.repository.CompetitionRecordRepository;
 import lt.javinukai.javinukai.repository.ContestRepository;
@@ -85,6 +87,20 @@ public class ArchiveService {
             log.info("{}: Retrieving past competition records by name", this.getClass().getName());
             return archiveRepository.findByContestNameContainingIgnoreCase(keyword, pageable);
         }
+    }
+
+    public Page<ArchivedContestDTO> retrieveAllPastContests(Pageable pageable, String keyword) {
+        final Page<PastCompetitionRecord> pastCompetitionRecords;
+
+        if (keyword == null || keyword.isEmpty()) {
+            log.info("{}: Retrieving all past competition record list from database", this.getClass());
+            pastCompetitionRecords = archiveRepository.findAll(pageable);
+        } else {
+            log.info("{}: Retrieving past competition records by name", this.getClass().getName());
+            pastCompetitionRecords = archiveRepository.findByContestNameContainingIgnoreCase(keyword, pageable);
+        }
+
+        return ArchiveMapper.contestRecordsToDTONoDup(pastCompetitionRecords);
     }
 
     public List<PastCompetitionRecord> retrieveContestRecords(UUID contestID) {

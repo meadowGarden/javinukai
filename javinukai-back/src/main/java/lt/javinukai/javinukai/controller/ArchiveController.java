@@ -2,8 +2,8 @@ package lt.javinukai.javinukai.controller;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
+import lt.javinukai.javinukai.dto.request.contest.ArchivedContestDTO;
 import lt.javinukai.javinukai.dto.response.ArchivingResponse;
-import lt.javinukai.javinukai.entity.Contest;
 import lt.javinukai.javinukai.entity.PastCompetitionRecord;
 import lt.javinukai.javinukai.service.ArchiveService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +61,26 @@ public class ArchiveController {
         return new ResponseEntity<>(pastCompetitionRecords, HttpStatus.OK);
     }
 
+    @GetMapping(path="/archivedContests")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MODERATOR')")
+    public ResponseEntity<?> retrieveArchivedContest(@RequestParam(defaultValue = "0") int page,
+                                             @RequestParam(defaultValue = "25") int limit,
+                                             @RequestParam(required = false) String contains,
+                                             @RequestParam(defaultValue = "name") String sortBy,
+                                             @RequestParam(defaultValue = "false") boolean sortDesc) {
+
+        log.info("Request for retrieving archive records");
+        Sort.Direction direction = sortDesc ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, sortBy);
+
+        final Pageable pageable = PageRequest.of(page, limit, sort);
+        final Page<ArchivedContestDTO> pastCompetitionRecords = archiveService.retrieveAllPastContests(pageable, contains);
+        log.info("Request for retrieving all categories, {} record(s) found", pastCompetitionRecords.getTotalElements());
+        return new ResponseEntity<>(pastCompetitionRecords, HttpStatus.OK);
+    }
+
     @GetMapping(path = "/archive/{contestID}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MODERATOR')")
     public ResponseEntity<List<PastCompetitionRecord>> retrieveContest(@PathVariable @NotNull UUID contestID) {
         log.info("Request for retrieving contest with ID: {}", contestID);
         final List<PastCompetitionRecord> foundContest = archiveService.retrieveContestRecords(contestID);
