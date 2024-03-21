@@ -7,6 +7,7 @@ import org.checkerframework.checker.units.qual.C;
 import java.util.UUID;
 
 @Entity
+@Table(name = "archive")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -22,14 +23,14 @@ public class PastCompetitionRecord {
     @Column(name="contest_name")
     private String contestName;
 
-    @Column(name="contest_description")
-    private String contestDescription;
+//    @Column(name="contest_description", columnDefinition = "TEXT")
+//    private String contestDescription;
 
     @Column(name="category_name")
     private String categoryName;
 
-    @Column(name="category_description")
-    private String categoryDescription;
+//    @Column(name="category_description", columnDefinition = "TEXT")
+//    private String categoryDescription;
 
     @Column(name="first_name")
     private String firstName;
