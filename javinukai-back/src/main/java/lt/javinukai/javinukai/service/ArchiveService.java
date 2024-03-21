@@ -49,13 +49,15 @@ public class ArchiveService {
 
             for (CompetitionRecord r : competitionRecords) {
                 PastCompetitionRecord pastCompetition = PastCompetitionRecord.builder()
+                        .contestID(contestID)
                         .firstName(r.getUser().getName())
                         .lastName(r.getUser().getSurname())
                         .email(r.getUser().getEmail())
                         .categoryName(r.getCategory().getName())
-//                        .categoryDescription(r.getCategory().getDescription())
                         .contestName(r.getContest().getName())
-//                        .contestDescription(r.getContest().getDescription())
+                        .contestDescription(r.getContest().getDescription())
+                        .startDate(r.getContest().getStartDate())
+                        .endDate(r.getContest().getEndDate())
                         .build();
                 archiveRepository.save(pastCompetition);
                 pastCompetitionRecords.add(pastCompetition);
@@ -83,5 +85,10 @@ public class ArchiveService {
             log.info("{}: Retrieving past competition records by name", this.getClass().getName());
             return archiveRepository.findByContestNameContainingIgnoreCase(keyword, pageable);
         }
+    }
+
+    public List<PastCompetitionRecord> retrieveContestRecords(UUID contestID) {
+        log.info("{}: Retrieving contest competition records by ID", this.getClass().getName());
+        return archiveRepository.findByContestID(contestID);
     }
 }

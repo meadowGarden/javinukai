@@ -3,6 +3,7 @@ package lt.javinukai.javinukai.controller;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import lt.javinukai.javinukai.dto.response.ArchivingResponse;
+import lt.javinukai.javinukai.entity.Contest;
 import lt.javinukai.javinukai.entity.PastCompetitionRecord;
 import lt.javinukai.javinukai.service.ArchiveService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,13 @@ public class ArchiveController {
         final Page<PastCompetitionRecord> pastCompetitionRecords = archiveService.retrieveAllRecords(pageable, contains);
         log.info("Request for retrieving all categories, {} record(s) found", pastCompetitionRecords.getTotalElements());
         return new ResponseEntity<>(pastCompetitionRecords, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/archive/{contestID}")
+    public ResponseEntity<List<PastCompetitionRecord>> retrieveContest(@PathVariable @NotNull UUID contestID) {
+        log.info("Request for retrieving contest with ID: {}", contestID);
+        final List<PastCompetitionRecord> foundContest = archiveService.retrieveContestRecords(contestID);
+        return new ResponseEntity<>(foundContest, HttpStatus.OK);
     }
 
 }

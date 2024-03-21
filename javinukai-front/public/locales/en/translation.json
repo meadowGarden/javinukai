@@ -472,5 +472,12 @@
     "notFoundInfoMessage": "Page that you are seeking was not found",
     "error": "error",
     "backToHomepage": "Return to homepage"
+  },
+
+  "ArchivePage": {
+    "contestName":"Contest name",
+    "contestDescription":"Contest description",
+    "startDate":"Start date",
+    "endDate":"End date"
   }
 }
